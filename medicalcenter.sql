@@ -1,7 +1,7 @@
 ﻿BEGIN;
 
 CREATE SCHEMA IF NOT EXISTS medicalcenter;
-SET search_path TO medicalcenter;
+SET LOCAL search_path TO medicalcenter;
 
 DROP TABLE IF EXISTS "Hospital", "Doctor", "DoctorPatient", "Patient",
 "PatientDisease", "Disease" CASCADE;
@@ -69,7 +69,5 @@ INSERT INTO "PatientDisease" (patient_id, disease_id) VALUES
 (1, 1),
 (2, 3),
 (3, 1);
-
-SET search_path TO public;
 
 COMMIT;

@@ -1,7 +1,7 @@
 ﻿BEGIN;
 
 CREATE SCHEMA IF NOT EXISTS craigslist;
-SET search_path TO craigslist;
+SET LOCAL search_path TO craigslist;
 
 DROP TABLE IF EXISTS "Region", "User", "Post", "Category";
 
@@ -53,7 +53,5 @@ INSERT INTO "Post" (user_id, category_id, region_id, title) VALUES
 (1, 3, 6, 'Couch for sale!'),
 (2, 1, 1, 'Room for rent!'),
 (3, 2, 2, 'To the person at the laundromat...');
-
-SET search_path TO public;
 
 COMMIT;
