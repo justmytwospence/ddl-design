@@ -1,70 +1,66 @@
-﻿-- Exported from QuickDBD: https://www.quickdatabasediagrams.com/
--- Link to schema: https://app.quickdatabasediagrams.com/#/d/cJDoEp
--- NOTE! If you have used non-SQL datatypes in your design, you will have to change these here.
-
--- Medical Center
+﻿DROP TABLE IF EXISTS "Hospital", "Doctor", "DoctorPatient", "Patient",
+"PatientDisease", "Disease" CASCADE;
 
 CREATE TABLE "Hospital" (
-    "id" int   NOT NULL,
-    "name" varchar   NOT NULL,
-    "address" varchar   NOT NULL,
-    CONSTRAINT "pk_Hospital" PRIMARY KEY (
-        "id"
-     )
+    "id" serial PRIMARY KEY,
+    "name" varchar NOT NULL,
+    "address" varchar
 );
+
+INSERT INTO "Hospital" (name, address) VALUES
+('Gotham Hospital', 'New York'),
+('Sacred Heart', 'Los Angeles');
 
 CREATE TABLE "Doctor" (
-    "id" int   NOT NULL,
-    "hospital_id" int   NOT NULL,
-    "address" varchar   NOT NULL,
-    "salary" float   NOT NULL,
-    CONSTRAINT "pk_Doctor" PRIMARY KEY (
-        "id"
-     )
+    "id" serial PRIMARY KEY,
+    "name" varchar,
+    "hospital_id" int REFERENCES "Hospital"(id),
+    "address" varchar,
+    "salary" float
 );
+
+INSERT INTO "Doctor" (hospital_id, name, address, salary) VALUES
+(2, 'JD', 'Los Angeles', 95000),
+(2, 'Turk', 'Los Angeles', 95000),
+(2, 'Elliott', 'Los Angeles', 95000);
 
 CREATE TABLE "DoctorPatient" (
-    "doctor_id" int   NOT NULL,
-    "patient_id" int   NOT NULL
+    "doctor_id" int REFERENCES "Doctor"(id),
+    "patient_id" int REFERENCES "Doctor"(id)
 );
+
+INSERT INTO "DoctorPatient" (doctor_id, patient_id) VALUES
+(1, 1),
+(2, 2),
+(1, 2);
 
 CREATE TABLE "Patient" (
-    "id" int   NOT NULL,
-    "name" varchar   NOT NULL,
-    "address" varchar   NOT NULL,
-    CONSTRAINT "pk_Patient" PRIMARY KEY (
-        "id"
-     )
+    "id" serial PRIMARY KEY,
+    "name" varchar NOT NULL,
+    "address" varchar
 );
 
-CREATE TABLE "PatientDisease" (
-    "patient_id" int   NOT NULL,
-    "disease_id" int   NOT NULL
-);
+INSERT INTO "Patient" (name, address) VALUES
+('Spencer Boucher', 'Fairfax Avenue'),
+('Hilary Boucher', 'Pond View Court'),
+('Greg Boucher', 'Pond View Court');
 
 CREATE TABLE "Disease" (
-    "id" int   NOT NULL,
-    "name" varchar   NOT NULL,
-    CONSTRAINT "pk_Disease" PRIMARY KEY (
-        "id"
-     )
+    "id" serial PRIMARY KEY,
+    "name" varchar NOT NULL
 );
 
-ALTER TABLE "Doctor" ADD CONSTRAINT "fk_Doctor_hospital_id" FOREIGN KEY("hospital_id")
-REFERENCES "Hospital" ("id");
+INSERT INTO "Disease" (name) VALUES
+('Diptheria'),
+('Measles'),
+('Irritable Bowel Syndrome');
 
-ALTER TABLE "DoctorPatient" ADD CONSTRAINT "fk_DoctorPatient_doctor_id" FOREIGN KEY("doctor_id")
-REFERENCES "Doctor" ("id");
+CREATE TABLE "PatientDisease" (
+    "patient_id" int REFERENCES "Patient"(id),
+    "disease_id" int REFERENCES "Disease"(id)
+);
 
-ALTER TABLE "DoctorPatient" ADD CONSTRAINT "fk_DoctorPatient_patient_id" FOREIGN KEY("patient_id")
-REFERENCES "Patient" ("id");
-
-ALTER TABLE "PatientDisease" ADD CONSTRAINT "fk_PatientDisease_patient_id" FOREIGN KEY("patient_id")
-REFERENCES "Patient" ("id");
-
-ALTER TABLE "PatientDisease" ADD CONSTRAINT "fk_PatientDisease_disease_id" FOREIGN KEY("disease_id")
-REFERENCES "Disease" ("id");
-
-CREATE INDEX "idx_Hospital_name"
-ON "Hospital" ("name");
-
+INSERT INTO "PatientDisease" (patient_id, disease_id) VALUES
+(1, 1),
+(2, 3),
+(3, 1);
