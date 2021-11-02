@@ -1,80 +1,100 @@
-﻿-- Exported from QuickDBD: https://www.quickdatabasediagrams.com/
--- Link to schema: https://app.quickdatabasediagrams.com/#/d/ZT3sEO
--- NOTE! If you have used non-SQL datatypes in your design, you will have to change these here.
-
+﻿DROP TABLE IF EXISTS "Team", "Referee", "Season", "Player", "Match", "Goal", "RefereeMatch" CASCADE;
 
 CREATE TABLE "Team" (
-    "id" int   NOT NULL,
-    "name" varchar   NOT NULL,
-    CONSTRAINT "pk_Team" PRIMARY KEY (
-        "id"
-     )
+    "id" serial PRIMARY KEY,
+    "name" varchar NOT NULL
 );
 
-CREATE TABLE "Goal" (
-    "id" int   NOT NULL,
-    "player_id" int   NOT NULL,
-    "match_id" int   NOT NULL,
-    CONSTRAINT "pk_Goal" PRIMARY KEY (
-        "id"
-     )
-);
-
-CREATE TABLE "Player" (
-    "id" int   NOT NULL,
-    "team_id" int   NOT NULL,
-    CONSTRAINT "pk_Player" PRIMARY KEY (
-        "id"
-     )
-);
+INSERT INTO "Team" (name)
+VALUES
+('Baker'),
+('Brown'),
+('Duncan'),
+('Hanszen'),
+('Jones'),
+('Lovett'),
+('Martel'),
+('McMurtry'),
+('Sid Rich'),
+('Will Rice'),
+('Wiess');
 
 CREATE TABLE "Referee" (
-    "id" int   NOT NULL,
-    "name" varchar   NOT NULL,
-    "salary" float   NOT NULL,
-    CONSTRAINT "pk_Referee" PRIMARY KEY (
-        "id"
-     )
+    "id" serial PRIMARY KEY,
+    "name" varchar NOT NULL,
+    "salary" float
 );
-
-CREATE TABLE "Match" (
-    "id" int   NOT NULL,
-    "home_team_id" int   NOT NULL,
-    "away_team_id" int   NOT NULL,
-    "season_id" int   NOT NULL,
-    "referee_id" int   NOT NULL,
-    CONSTRAINT "pk_Match" PRIMARY KEY (
-        "id"
-     )
-);
+INSERT INTO "Referee" (name, salary) VALUES
+('Greg Boucher', 1555000),
+('Garrett Boucher', 115000),
+('Andy Hayslip', 105000);
 
 CREATE TABLE "Season" (
-    "id" int   NOT NULL,
-    "start_date" date   NOT NULL,
-    "end_date" date   NOT NULL,
-    CONSTRAINT "pk_Season" PRIMARY KEY (
-        "id"
-     )
+    "id" serial PRIMARY KEY,
+    "start_date" date NOT NULL,
+    "end_date" date NOT NULL
 );
 
-ALTER TABLE "Goal" ADD CONSTRAINT "fk_Goal_player_id" FOREIGN KEY("player_id")
-REFERENCES "Player" ("id");
+INSERT INTO "Season" (start_date, end_date) VALUES
+('2008-08-01', '2009-05-01'),
+('2009-08-01', '2010-05-01'),
+('2010-08-01', '2011-05-01');
 
-ALTER TABLE "Goal" ADD CONSTRAINT "fk_Goal_match_id" FOREIGN KEY("match_id")
-REFERENCES "Match" ("id");
+CREATE TABLE "Player" (
+    "id" serial PRIMARY KEY,
+    "team_id" int REFERENCES "Team"(id),
+    "name" varchar NOT NULL
+);
 
-ALTER TABLE "Player" ADD CONSTRAINT "fk_Player_team_id" FOREIGN KEY("team_id")
-REFERENCES "Team" ("id");
+INSERT INTO "Player" (name, team_id) VALUES
+('Spencer Boucher', 4),
+('Alisa Yu', 4),
+('Charlie Behr', 9),
+('Raymond Verm', 4),
+('Amy Bridges', 2),
+('Matt Youn', 2);
 
-ALTER TABLE "Match" ADD CONSTRAINT "fk_Match_home_team_id" FOREIGN KEY("home_team_id")
-REFERENCES "Team" ("id");
+CREATE TABLE "Match" (
+    "id" serial PRIMARY KEY,
+    "home_team_id" int REFERENCES "Team"(id),
+    "away_team_id" int REFERENCES "Team"(id),
+    "outcome" varchar(4),
+    "season_id" int REFERENCES "Season"(id),
 
-ALTER TABLE "Match" ADD CONSTRAINT "fk_Match_away_team_id" FOREIGN KEY("away_team_id")
-REFERENCES "Team" ("id");
+    -- how to constrain the winning team according to actual goals?
+    CONSTRAINT outcome CHECK (
+        "outcome" IN ('home', 'away', 'tie')
+    )
+);
 
-ALTER TABLE "Match" ADD CONSTRAINT "fk_Match_season_id" FOREIGN KEY("season_id")
-REFERENCES "Season" ("id");
+INSERT INTO "Match" (home_team_id, away_team_id, outcome, season_id) VALUES
+(4, 9, 'home', 1),
+(2, 4, 'away', 1),
+(2, 9, 'away', 1),
+(9, 4, 'away', 1);
 
-ALTER TABLE "Match" ADD CONSTRAINT "fk_Match_referee_id" FOREIGN KEY("referee_id")
-REFERENCES "Referee" ("id");
+CREATE TABLE "Goal" (
+    "id" serial PRIMARY KEY,
+    "match_id" int REFERENCES "Match"(id),
+    "player_id" int REFERENCES "Player"(id)
+);
 
+-- how to constrain these to allowable match_id and player_id?
+Insert INTO "Goal" (match_id, player_id) VALUES
+(1, 1),
+(1, 2),
+(1, 3),
+(2, 5),
+(2, 1),
+(2, 2),
+(3, 3),
+(3, 6),
+(4, 1),
+(4, 2),
+(4, 3),
+(4, 3);
+
+CREATE TABLE "RefereeMatch" (
+    "referee_id" int REFERENCES "Referee"(id),
+    "match_id" int REFERENCES "Match"(id)
+);
