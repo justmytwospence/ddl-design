@@ -1,4 +1,9 @@
-﻿DROP TABLE IF EXISTS "Team", "Referee", "Season", "Player", "Match", "Goal", "RefereeMatch" CASCADE;
+﻿BEGIN;
+
+CREATE SCHEMA IF NOT EXISTS soccer;
+SET search_path TO soccer;
+
+DROP TABLE IF EXISTS "Team", "Referee", "Season", "Player", "Match", "Goal", "RefereeMatch" CASCADE;
 
 CREATE TABLE "Team" (
     "id" serial PRIMARY KEY,
@@ -98,3 +103,7 @@ CREATE TABLE "RefereeMatch" (
     "referee_id" int REFERENCES "Referee"(id),
     "match_id" int REFERENCES "Match"(id)
 );
+
+SET search_path TO public;
+
+COMMIT;

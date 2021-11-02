@@ -1,55 +1,59 @@
-﻿-- Exported from QuickDBD: https://www.quickdatabasediagrams.com/
--- Link to schema: https://app.quickdatabasediagrams.com/#/d/a7ARl1
--- NOTE! If you have used non-SQL datatypes in your design, you will have to change these here.
+﻿BEGIN;
 
+CREATE SCHEMA IF NOT EXISTS craigslist;
+SET search_path TO craigslist;
+
+DROP TABLE IF EXISTS "Region", "User", "Post", "Category";
 
 CREATE TABLE "Region" (
-    "id" int   NOT NULL,
-    "name" varchar   NOT NULL,
-    CONSTRAINT "pk_Region" PRIMARY KEY (
-        "id"
-     )
+    "id" serial PRIMARY KEY,
+    "name" varchar NOT NULL
 );
 
-CREATE TABLE "User" (
-    "id" int   NOT NULL,
-    "name" varchar   NOT NULL,
-    "region_id" int   NOT NULL,
-    CONSTRAINT "pk_User" PRIMARY KEY (
-        "id"
-     )
-);
-
-CREATE TABLE "Post" (
-    "id" int   NOT NULL,
-    "title" varchar   NOT NULL,
-    "text" varchar   NOT NULL,
-    "user_id" int   NOT NULL,
-    "location" varchar   NOT NULL,
-    "region_id" int   NOT NULL,
-    "category_id" int   NOT NULL,
-    CONSTRAINT "pk_Post" PRIMARY KEY (
-        "id"
-     )
-);
+INSERT INTO "Region" (name) VALUES
+('Nashville'),
+('Houston'),
+('San Francisco'),
+('Thailand'),
+('New York'),
+('Denver');
 
 CREATE TABLE "Category" (
-    "id" int   NOT NULL,
-    "name" varchar   NOT NULL,
-    CONSTRAINT "pk_Category" PRIMARY KEY (
-        "id"
-     )
+    "id" serial PRIMARY KEY,
+    "name" varchar NOT NULL
 );
 
-ALTER TABLE "User" ADD CONSTRAINT "fk_User_region_id" FOREIGN KEY("region_id")
-REFERENCES "Region" ("id");
+INSERT INTO "Category" (name) VALUES
+('Housing'),
+('Missed Connection'),
+('Furniture');
 
-ALTER TABLE "Post" ADD CONSTRAINT "fk_Post_user_id" FOREIGN KEY("user_id")
-REFERENCES "User" ("id");
+CREATE TABLE "User" (
+    "id" serial PRIMARY KEY,
+    "region_id" int REFERENCES "Region"(id),
+    "name" varchar NOT NULL
+);
 
-ALTER TABLE "Post" ADD CONSTRAINT "fk_Post_region_id" FOREIGN KEY("region_id")
-REFERENCES "Region" ("id");
+INSERT INTO "User" (region_id, name) VALUES
+(6, 'Spencer Boucher'),
+(1, 'Grace Boucher'),
+(6, 'Eric Rasch');
 
-ALTER TABLE "Post" ADD CONSTRAINT "fk_Post_category_id" FOREIGN KEY("category_id")
-REFERENCES "Category" ("id");
+CREATE TABLE "Post" (
+    "id" serial PRIMARY KEY,
+    "user_id" int REFERENCES "User"(id),
+    "category_id" int REFERENCES "Category"(id),
+    "region_id" int REFERENCES "Region"(id), -- how to set the default to the user's region?
+    "title" varchar NOT NULL,
+    "text" varchar,
+    "location" varchar
+);
 
+INSERT INTO "Post" (user_id, category_id, region_id, title) VALUES
+(1, 3, 6, 'Couch for sale!'),
+(2, 1, 1, 'Room for rent!'),
+(3, 2, 2, 'To the person at the laundromat...');
+
+SET search_path TO public;
+
+COMMIT;
