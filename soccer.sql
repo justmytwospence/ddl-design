@@ -3,7 +3,8 @@
 CREATE SCHEMA IF NOT EXISTS soccer;
 SET LOCAL search_path TO soccer;
 
-DROP TABLE IF EXISTS "Team", "Referee", "Season", "Player", "Match", "Goal", "RefereeMatch" CASCADE;
+DROP TABLE IF EXISTS "Team", "Referee", "Season", "Player", "Match", "Goal",
+"RefereeMatch", "Outcome" CASCADE;
 
 CREATE TABLE "Team" (
     "id" serial PRIMARY KEY,
@@ -63,29 +64,24 @@ CREATE TABLE "Match" (
     "id" serial PRIMARY KEY,
     "home_team_id" int REFERENCES "Team"(id),
     "away_team_id" int REFERENCES "Team"(id),
-    "outcome" varchar(4),
-    "season_id" int REFERENCES "Season"(id),
-
-    -- how to constrain the winning team according to actual goals?
-    CONSTRAINT outcome CHECK (
-        "outcome" IN ('home', 'away', 'tie')
-    )
+    "season_id" int REFERENCES "Season"(id)
 );
 
-INSERT INTO "Match" (home_team_id, away_team_id, outcome, season_id) VALUES
-(4, 9, 'home', 1),
-(2, 4, 'away', 1),
-(2, 9, 'away', 1),
-(9, 4, 'away', 1);
+INSERT INTO "Match" (home_team_id, away_team_id, season_id) VALUES
+(4, 9, 1),
+(2, 4, 1),
+(2, 9, 1),
+(9, 4, 1),
+(9, 2, 1);
 
+-- how to constrain these to allowable match_id and player_id combinations?
 CREATE TABLE "Goal" (
     "id" serial PRIMARY KEY,
     "match_id" int REFERENCES "Match"(id),
     "player_id" int REFERENCES "Player"(id)
 );
 
--- how to constrain these to allowable match_id and player_id?
-Insert INTO "Goal" (match_id, player_id) VALUES
+INSERT INTO "Goal" (match_id, player_id) VALUES
 (1, 1),
 (1, 2),
 (1, 3),
@@ -97,11 +93,33 @@ Insert INTO "Goal" (match_id, player_id) VALUES
 (4, 1),
 (4, 2),
 (4, 3),
-(4, 3);
+(4, 3),
+(5, 3),
+(5, 6);
 
 CREATE TABLE "RefereeMatch" (
     "referee_id" int REFERENCES "Referee"(id),
     "match_id" int REFERENCES "Match"(id)
 );
+
+-- how to constrain the winning team according to actual goals?
+CREATE TABLE "Outcome" (
+    match_id INT REFERENCES "Match"(id),
+    team_id INT REFERENCES "Team"(id),
+    outcome TEXT CHECK (outcome IN ('win', 'loss', 'tie')) NOT NULL,
+    
+);
+
+INSERT INTO "Outcome" (match_id, team_id, outcome) VALUES
+(1, 4, 'win'),
+(1, 9, 'loss'),
+(2, 4, 'win'),
+(2, 2, 'loss'),
+(3, 9, 'win'),
+(3, 2, 'loss'),
+(4, 4, 'win'),
+(4, 2, 'loss'),
+(5, 4, 'tie'),
+(5, 2, 'tie');
 
 COMMIT;
