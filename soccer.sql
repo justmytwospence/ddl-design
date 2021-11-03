@@ -106,8 +106,7 @@ CREATE TABLE "RefereeMatch" (
 CREATE TABLE "Outcome" (
     match_id INT REFERENCES "Match"(id),
     team_id INT REFERENCES "Team"(id),
-    outcome TEXT CHECK (outcome IN ('win', 'loss', 'tie')) NOT NULL,
-    
+    outcome TEXT CHECK (outcome IN ('win', 'loss', 'tie')) NOT NULL
 );
 
 INSERT INTO "Outcome" (match_id, team_id, outcome) VALUES
