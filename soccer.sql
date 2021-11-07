@@ -19,8 +19,7 @@ CREATE TABLE "Team" (
     "name" varchar NOT NULL
 );
 
-INSERT INTO "Team" (name)
-VALUES
+INSERT INTO "Team" (name) VALUES
 ('Baker'),
 ('Brown'),
 ('Duncan'),

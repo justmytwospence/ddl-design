@@ -4,12 +4,13 @@ CREATE SCHEMA IF NOT EXISTS medicalcenter;
 SET LOCAL search_path TO medicalcenter;
 
 DROP TABLE IF EXISTS
+"Diagnosis",
 "Disease",
 "Doctor",
 "DoctorPatient",
 "Hospital",
 "Patient",
-"PatientDisease"
+"Visit"
 CASCADE;
 
 CREATE TABLE "Hospital" (
@@ -66,12 +67,21 @@ INSERT INTO "Disease" (name) VALUES
 ('Measles'),
 ('Irritable Bowel Syndrome');
 
-CREATE TABLE "PatientDisease" (
+CREATE TABLE "Visit" (
+    "id" serial PRIMARY KEY,
+    "date" date NOT NULL,
+    "patient_id" int REFERENCES "Patient"(id),
+    "doctor_id" int REFERENCES "Doctor"(id)
+);
+
+CREATE TABLE "Diagnosis" (
+    "id" serial PRIMARY KEY,
+    "visit_id" int REFERENCES "Visit"(id),
     "patient_id" int REFERENCES "Patient"(id),
     "disease_id" int REFERENCES "Disease"(id)
 );
 
-INSERT INTO "PatientDisease" (patient_id, disease_id) VALUES
+INSERT INTO "Diagnosis" (patient_id, disease_id) VALUES
 (1, 1),
 (2, 3),
 (3, 1);
