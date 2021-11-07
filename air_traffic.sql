@@ -3,7 +3,13 @@ BEGIN;
 CREATE SCHEMA IF NOT EXISTS airtraffic;
 SET LOCAL search_path TO airtraffic;
 
-DROP TABLE IF EXISTS airline, passenger, city, country, ticket;
+DROP TABLE IF EXISTS
+airline,
+city,
+country,
+passenger,
+ticket
+CASCADE;
 
 CREATE TABLE airline (
   id SERIAL PRIMARY KEY,

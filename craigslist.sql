@@ -3,7 +3,12 @@
 CREATE SCHEMA IF NOT EXISTS craigslist;
 SET LOCAL search_path TO craigslist;
 
-DROP TABLE IF EXISTS "Region", "User", "Post", "Category";
+DROP TABLE IF EXISTS
+"Category",
+"Post",
+"Region",
+"User"
+CASCADE;
 
 CREATE TABLE "Region" (
     "id" serial PRIMARY KEY,

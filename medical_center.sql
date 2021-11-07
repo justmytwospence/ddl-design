@@ -3,8 +3,14 @@
 CREATE SCHEMA IF NOT EXISTS medicalcenter;
 SET LOCAL search_path TO medicalcenter;
 
-DROP TABLE IF EXISTS "Hospital", "Doctor", "DoctorPatient", "Patient",
-"PatientDisease", "Disease" CASCADE;
+DROP TABLE IF EXISTS
+"Disease",
+"Doctor",
+"DoctorPatient",
+"Hospital",
+"Patient",
+"PatientDisease"
+CASCADE;
 
 CREATE TABLE "Hospital" (
     "id" serial PRIMARY KEY,

@@ -3,7 +3,14 @@ BEGIN;
 CREATE SCHEMA IF NOT EXISTS music;
 SET LOCAL search_path TO music;
 
-DROP TABLE IF EXISTS "Artist", "Album", "Producer", "Song", "ArtistSong", "ProducerSong";
+DROP TABLE IF EXISTS
+"Album",
+"Artist",
+"ArtistSong",
+"Producer",
+"ProducerSong",
+"Song"
+CASCADE;
 
 CREATE TABLE "Album" (
   id SERIAL PRIMARY KEY,

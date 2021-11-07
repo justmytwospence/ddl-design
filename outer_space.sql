@@ -3,7 +3,12 @@ BEGIN;
 CREATE SCHEMA IF NOT EXISTS outerspace;
 SET LOCAL search_path TO outerspace;
 
-DROP TABLE IF EXISTS "Galaxy", "Star", "Planet", "Moon";
+DROP TABLE IF EXISTS
+"Galaxy",
+"Moon",
+"Planet",
+"Star"
+CASCADE;
 
 CREATE TABLE "Galaxy" (
   id SERIAL PRIMARY KEY,

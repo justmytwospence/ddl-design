@@ -3,8 +3,16 @@
 CREATE SCHEMA IF NOT EXISTS soccer;
 SET LOCAL search_path TO soccer;
 
-DROP TABLE IF EXISTS "Team", "Referee", "Season", "Player", "Match", "Goal",
-"RefereeMatch", "Outcome" CASCADE;
+DROP TABLE IF EXISTS
+"Goal",
+"Match",
+"Outcome",
+"Player",
+"Referee",
+"RefereeMatch",
+"Season",
+"Team"
+CASCADE;
 
 CREATE TABLE "Team" (
     "id" serial PRIMARY KEY,
@@ -30,10 +38,11 @@ CREATE TABLE "Referee" (
     "name" varchar NOT NULL,
     "salary" float
 );
+
 INSERT INTO "Referee" (name, salary) VALUES
-('Greg Boucher', 1555000),
-('Garrett Boucher', 115000),
-('Andy Hayslip', 105000);
+('Greg', 1555000),
+('Garrett', 115000),
+('Andy', 105000);
 
 CREATE TABLE "Season" (
     "id" serial PRIMARY KEY,
@@ -48,17 +57,20 @@ INSERT INTO "Season" (start_date, end_date) VALUES
 
 CREATE TABLE "Player" (
     "id" serial PRIMARY KEY,
+    "name" varchar NOT NULL,
     "team_id" int REFERENCES "Team"(id),
-    "name" varchar NOT NULL
+    "from_date" date NOT NULL,
+    "to_date" date NOT NULL
 );
 
-INSERT INTO "Player" (name, team_id) VALUES
-('Spencer Boucher', 4),
-('Alisa Yu', 4),
-('Charlie Behr', 9),
-('Raymond Verm', 4),
-('Amy Bridges', 2),
-('Matt Youn', 2);
+INSERT INTO "Player" (name, team_id, from_date, to_date) VALUES
+('Spencer', 4, '2008-08-01', '2011-05-01'),
+('Alisa', 4, '2008-08-01', '2012-05-01'),
+('Charlie', 9, '2008-08-01', '2012-05-01'),
+('Raymond', 4, '2008-08-01', '2012-05-01'),
+('Amy', 2, '2008-08-01', '2012-05-01'),
+('Matt', 2, '2008-08-01', '2012-05-01'),
+('Estevan', 2, '2008-08-01', '2012-05-01');
 
 CREATE TABLE "Match" (
     "id" serial PRIMARY KEY,
